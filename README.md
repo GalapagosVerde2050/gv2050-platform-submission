@@ -11,7 +11,7 @@ RestR was designed to have an intuitive UI that follows the steps of the restora
 
 ### 1. About
  - A page about us, our project, and the app!
- - 
+
 ### 2. Restoration Progress
  - Restoration Target: Allows the user to enter a target number of plants and visualize the progress towards that target with an area graph.
  - Progress to Target: Information box showing percentage of restoration target achieved. The appearance of the box changes based on if the target has been met or not.
