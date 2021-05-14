@@ -7,6 +7,8 @@ about_tab <- tabItem(tabName = "about",
                        column(width = 6,
                               div(style="text-align:left",tags$h3("The Story of RestoR")),
                               box(width = "100%", status = "success",
+                                  img(src = "cdf_gV2050_logo.jpg", width = "100%", style="display: block; margin-left: auto; margin-right: auto;"),
+                                  
                                   p("RestoR was born from the need to make the process of restoring degraded
                                 ecosystems of the Galapagos Islands more efficient. It all started when
                                 members of the ",
@@ -21,7 +23,6 @@ about_tab <- tabItem(tabName = "about",
                               restoring the unique ecosystems of the Galapagos. Today, the GV2050 team uses a version
                               of RestoR to manage 90+ restoration sites with over 12,000 plants."),
 
-                                  img(src = "Logo_final.jpg", width = "70%", style="display: block; margin-left: auto; margin-right: auto;"),
                                   img(src = "mina granillo.jpg", width = "100%", style="display: block; margin-left: auto; margin-right: auto; max-width:100%;", ))
                        ),
                        column(width = 6,
