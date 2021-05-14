@@ -31,8 +31,8 @@ source("scripts/ELEMENT_fieldwork_figure.R", local = T)
 source("scripts/ELEMENT_restoration_target.R", local = T)
 
 # Sys.Date()
-update_lab = "Last data update: 2021-03-05 (beta v0.8)"  
-version_lab = "(beta v0.9)"
+update_lab = "Last data update: 2021-05-14 (1.0)"  
+version_lab = "(Initial Release v1.0)"
 updates_notes = ""
 
 
