@@ -11,6 +11,7 @@
 library(shiny)
 library(shinyWidgets) 
 library(shinydashboard)
+library(tidyverse)
 
 # Read in data
 sample_data <- read_csv("data/hypothetical_data.csv")
