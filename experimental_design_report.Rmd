@@ -1,0 +1,249 @@
+---
+pagetitle: "Experimental Design Results"
+date: ""
+output: html_document
+params: 
+  name: NA
+  site: NA
+  species: NA
+  spp_num: NA
+  treatments: NA
+  restor_prop: NA
+  survival_data: NA
+---
+
+<style>
+div.blue {background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+
+# Design for `r params$name`
+### `r format(Sys.Date(), format="%d-%b-%Y")`
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+### REMOVE THIS SECTION WHEN RUNNING THE ACTUAL THING
+name <- "Baltra New"
+species <- c("Opuntia echios var. echios","Acacia macracantha")
+species_num <- c(30,40)
+treatments <- c("control", "treatment1", "treatment2")
+restor_prop <- 0.5
+source("scripts/00_functions.R")
+survival_data <- read_csv("data/hypothetical_data.csv")
+
+# source("00_code_functions.R")
+# source("00_functions_B.R")
+
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# The `params` object is available in the document.
+params$name
+params$species
+
+# remove white space from spp_number string:
+species_num <- str_replace_all(params$spp_num, fixed(" "), "")
+# then separate by comma:
+species_num <- as.numeric(str_split(species_num, ",")[[1]])
+species_num
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# all_sites <- design_sites(spp2plant=c("Lycium minimum","Opuntia echios var. echios", "Maytenus octogona"),
+#                           site_params = list(site1=list(numbers=c(14,10,13), total_groasis=20, total_cocoon=999, zone_type="arid")),
+#                           sample_sizes=samp_sizes, recomendations=recs, overall_results=overall_res, zone_recom=zone_recs)
+
+all_sites <- design_sites(spp2plant=params$species,
+                          site_params = list(site1=list(numbers=species_num,
+                                                        total_groasis=params$gro_num,
+                                                        total_cocoon=params$coc_num,
+                                                        zone_type=params$zone_type,
+                                                        isle=params$island)),
+                          sample_sizes=params$samp_sizes,
+                          recomendations=params$recs,
+                          overall_results=params$overall_res,
+                          zone_recom=params$zone_recs,
+                          restor_prop=params$restor_prop)
+
+# ### REMOVE THIS SECTION AND UNCOMMENT THE PREVIOUS ONE WHEN RUNNING THIS FOR REAL
+# all_sites <- design_sites(spp2plant=species,
+#                           site_params = list(site1=list(numbers=species_num, 
+#                                                         total_groasis=gro_num, 
+#                                                         total_cocoon=coc_num, 
+#                                                         zone_type=zone_type)),
+#                           sample_sizes=samp_sizes, 
+#                           recomendations=recs, 
+#                           overall_results=overall_res, 
+#                           zone_recom=zone_recs)
+
+all_sites_sub <- all_sites$site1
+trt_totals <- apply(all_sites_sub[,-1], 2, sum)
+coc_total <- sum(trt_totals[grepl("cocoon", names(trt_totals))])
+gro_total <- sum(trt_totals[grepl("groasis", names(trt_totals))])
+hyd_total <- sum(trt_totals[grepl("hydro", names(trt_totals))])
+cont_total <- sum(trt_totals[names(trt_totals) == "hydrogel" | grepl("contr", names(trt_totals))])
+plants_tot <- sum(trt_totals)
+species <- all_sites_sub[,1]
+spp_totals <- tibble(species=species, total=apply(all_sites_sub[,-1], 1, sum))
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+### Now make a function that creates a list for each site by creating a row for each
+### combination of species and technologies and ordering them randomly in order to plant them randomly:
+# treatments:
+trtmt <- c("control", "hydrogel", "cocoon", "cocoon_hydrogel", "groasis", "groasis_hydrogel")
+sites_bound <- bind_rows(all_sites, .id = "site")
+species <- unique(sites_bound$species)
+all_site_plantings <- list()
+for(site_name in names(all_sites)){
+  # sites <- names(all_sites)
+  # site_name <- sites[1]
+  site <- all_sites[[site_name]]
+  site <- as.data.frame(site)
+  
+  site_stack <- NULL
+  for(sp in species){
+    species_stack <- NULL
+    for(i in trtmt){
+      spp <- filter(site, species==sp)
+      Species <- rep(spp[,1], spp[,i])
+      Treatment <- rep(i, spp[,i])
+      trt_stack <- data.frame(Species,Treatment)
+      species_stack <- rbind(species_stack, trt_stack)
+    }
+    site_stack <- rbind(site_stack, species_stack)
+  }
+  random_rows <- sample(nrow(site_stack))
+  
+  site_planting_table <- site_stack[random_rows,]
+  
+  all_site_plantings[[site_name]] <- site_planting_table
+}
+random_plantings <- all_site_plantings$site1
+
+### FOR CREATING HTML TABLES: https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html
+
+```
+
+## Experimental Design:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+all_sites_sub %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 16)
+```
+
+## Previous Plantings on `r params$island`
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+samp_sub_fin <- NULL
+for(s in params$species){
+  samp_sub <- filter(params$samp_sizes, island==params$island & species_full==s) %>%
+    select(treatment, size)
+  # samp_sub <- filter(params$samp_sizes, island=="Floreana" & species_full=="Zanthoxylum fagara") %>%
+  #   select(treatment, size)
+  
+  treatments <- samp_sub$treatment
+  samples <- samp_sub$size
+  samp_sub <- as.tibble(t(samp_sub))
+  names(samp_sub) <- treatments
+  samp_sub <- samp_sub[-1,] %>%
+    mutate(control = as.numeric(control),
+           hydrogel = as.numeric(hydrogel),
+           cocoon = as.numeric(cocoon),
+           cocoon_hydrogel = as.numeric(cocoon_hydrogel),
+           groasis = as.numeric(groasis),
+           groasis_hydrogel = as.numeric(groasis_hydrogel),
+           species=s) %>%
+    select(species, everything())
+  
+  samp_sub_fin <- rbind(samp_sub_fin,samp_sub)
+}
+
+samp_sub_fin %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 16)
+```
+
+---
+
+### Treatment and species totals:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+tibble(treatment = names(trt_totals), total=trt_totals) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "float_left", font_size = 16)
+
+spp_totals %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 16)
+```
+<br><br><br><br><br><br><br>
+ 
+### Total number of technologies required:
+
+<div class = "blue">
+
+### Total Cocoons: **`r coc_total`**
+
+### Total Groasis: **`r gro_total`**
+
+### Total Hydrogels: **`r hyd_total`**
+
+<!-- ### Total No-technologies: **`r cont_total`** -->
+
+</div>
+
+---
+
+### Time required for plantings:
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+min_groasis <- gro_total*groa_time[1]
+min_cocoon <- coc_total*coco_time[1]
+min_control <- cont_total*cont_time[1]
+total_hrs_minimum <- (min_groasis+min_cocoon+min_control)/60
+
+max_groasis <- gro_total*groa_time[2]
+max_cocoon <- coc_total*coco_time[2]
+max_control <- cont_total*cont_time[2]
+total_hrs_maximum <- (max_groasis+max_cocoon+max_control)/60
+```
+
+
+<div class = "blue">
+
+#### Minimum Person-Hours required (for small sites):
+### **`r round(total_hrs_minimum)`** **`r paste("= (4 staff working for", round(total_hrs_minimum/4), "hours)")`**
+
+<br>
+
+
+#### Maximum+ Person-Hours required (for larger sites and with fences):
+### **`r  round(total_hrs_maximum)`** **`r paste("= (4 staff working for", round(total_hrs_maximum/4), "hours)")`**
+
+These time estimates are based are based on general estimates from two different sites (San Cristobal and Baltra) and though they are approximate they are probably close to the realistic number. However, these estimates likely don't apply to sites such as Española where the unique site requires particular effort (e.g., piling rocks up to protect plants, etc.).
+
+</div>
+
+---
+
+### Random order plantings:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+as.tibble(random_plantings) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 12)
+```
+
+
+
+
+
+
+
+\ 
+
+\ 
+
+\ 
+
+

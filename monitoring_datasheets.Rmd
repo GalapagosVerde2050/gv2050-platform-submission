@@ -1,0 +1,47 @@
+---
+title: Monitoring Datasheets
+output: html_document
+params:
+  site: NA
+  sample_data: NA
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(kableExtra)
+library(knitr)
+library(tidyverse)
+library(rmarkdown)
+```
+
+```{r, echo=FALSE, message=FALSE}
+# Table with required columns
+datasheet_data <- params$sample_data %>%
+  filter(site == params$site) %>% 
+  dplyr::select(plant_ID, treatment, site, lat, long) %>%
+  mutate(state = "") %>% 
+  mutate(observations = "") %>% 
+  unique()
+
+# Datasheet df without columns that go on header
+datasheet_df <- datasheet_data %>% 
+  dplyr::select(-site)
+
+# Get data column names
+col <- c("Plant ID", "Treatment", "Lat", "Long", "State", "Observations")
+
+colnames(datasheet_df) <- col
+
+kable(datasheet_df, "latex", booktabs = TRUE, longtable = TRUE) %>%
+  kable_styling(latex_options = c("hold_position", "repeat_header")) %>%  add_header_above(c( "Site:" = 1, " " = 2, "Monitoring Date:" = 1, " " = 2)) %>% row_spec(0,bold=TRUE) %>% 
+  row_spec(c(1:nrow(datasheet_df)), hline_after = TRUE)
+
+```
+
+
+
+
+
+
+
+

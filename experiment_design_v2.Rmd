@@ -1,0 +1,115 @@
+---
+pagetitle: "Experimental Design Results"
+date: ""
+output: html_document
+params: 
+  name: NA
+  survival_data: NA
+  site: NA
+  species: NA
+  spp_num: NA
+  restor_prop: NA
+
+---
+
+<style>
+div.blue {background-color:#e6f0ff; border-radius: 5px; padding: 10px;}
+</style>
+
+# Design for `r params$name`
+### `r format(Sys.Date(), format="%d-%b-%Y")`
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+library(kableExtra)
+library(stringr)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+
+design <- generate_exper_design(survival_data = params$survival_data,
+                                site_type = params$site,
+                                species_type = params$species,
+                                species_num = params$spp_num,
+                                restor_prop = params$restor_prop,
+                                return_prev_plantings = F)
+
+
+# survival_data <- read_csv("data/hypothetical_data.csv")
+# design <- generate_exper_design(survival_data = survival_data, 
+#                       restor_prop = 0.5,
+#                       species_num = c(50,50),
+#                       site_type = "Casa de piedra",
+#                       species_type = c("Maytenus octogona","Parkinsonia aculeata"))
+
+plantings_total <- sum(design, na.rm=T)
+trt_totals <- apply(design, 2, function(x) sum(x, na.rm=T))
+```
+
+## Experimental Design:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+design %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 16)
+```
+
+## Previous Plantings at `r params$site`
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+prev_plantings <- generate_exper_design(survival_data = params$survival_data,
+                                site_type = params$site,
+                                species_type = params$species,
+                                species_num = params$spp_num,
+                                restor_prop = params$restor_prop,
+                                return_prev_plantings = T)
+
+messages <- generate_exper_design(survival_data = params$survival_data,
+                                site_type = params$site,
+                                species_type = params$species,
+                                species_num = params$spp_num,
+                                restor_prop = params$restor_prop,
+                                return_prev_plantings = F,
+                                return_message = T)
+
+prev_plantings %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 16)
+```
+`r print(messages)`
+
+---
+
+### Treatment totals:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# plantings_total
+# trt_totals
+
+tibble(treatment = names(trt_totals), total=trt_totals) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "float_left", font_size = 16)
+```
+
+
+<!-- ### Random order plantings: -->
+
+<!-- ```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE} -->
+<!-- as.tibble(random_plantings) %>% -->
+<!--   kable() %>% -->
+<!--   kable_styling(bootstrap_options = "striped", full_width = F, position = "left", font_size = 12) -->
+<!-- ``` -->
+
+
+
+
+
+
+
+\ 
+
+\ 
+
+\ 
+
+
