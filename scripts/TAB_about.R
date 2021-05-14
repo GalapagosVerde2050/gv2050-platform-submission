@@ -20,8 +20,8 @@ about_tab <- tabItem(tabName = "about",
                               the GV2050 team has been able to spend more time in the field doing what matters most,
                               restoring the unique ecosystems of the Galapagos. Today, the GV2050 team uses a version
                               of RestoR to manage 90+ restoration sites with over 12,000 plants."),
-                                  img(src = "Logo_final.png", height = 150, style="display: block; margin-left: auto; margin-right: auto;"),
-                                  img(src = "mina granillo.jpg", height = 350, style="display: block; margin-left: auto; margin-right: auto; max-width:100%;", ))
+                                  img(src = "Logo_final.png", width = "70%", style="display: block; margin-left: auto; margin-right: auto;"),
+                                  img(src = "mina granillo.jpg", width = "100%", style="display: block; margin-left: auto; margin-right: auto; max-width:100%;", ))
                        ),
                        column(width = 6,
                               div(style="text-align:left",tags$h3("Adaptive Management")),
@@ -47,7 +47,8 @@ about_tab <- tabItem(tabName = "about",
                                     tags$li("Keep track of the pogress towards your restoration target"),
                                     tags$li("Analyze/Summarize Data"),
                                     tags$li("Plan for planting expeditions"),
-                                    tags$li("Plan for monitoring expeditions")
+                                    tags$li("Plan for monitoring expeditions"),
+                                    tags$b("We've included a hypothetical sample dataset for you to explore before choosing to adapt this app to your own project."),
                                   ))
                        )
                      )

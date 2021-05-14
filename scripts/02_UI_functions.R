@@ -31,7 +31,12 @@ footer <- div(style = "padding: 15px; text-align: center; background-color: #5C9
                 img(src = "https://rstudio.com/wp-content/uploads/2018/10/RStudio-Logo-Flat.png", height = "30px"),
                 ".",
                 br(),
-                "R version 4.0.3 (2020-10-10). Code on  ", tags$a(href ="https://github.com/LukaNeg/gv2050-platform-submission", target="_blank", icon("github"),"GitHub."))
+                "R version 4.0.3 (2020-10-10). Code on  ", tags$a(style="color:#a4f740;", href ="https://github.com/LukaNeg/gv2050-platform-submission", target="_blank", icon("github"),"GitHub.")),
+              br(),
+              "Authors: ",tags$a(style="color:#a4f740;", href ="https://github.com/annagaby", target="_blank", icon("github"),"Anna Calle"),
+              " and ", tags$a(style="color:#a4f740;", href ="http://lukaneg.github.io", target="_blank","Luka Negoita")
+              
+              
 )
 
 ### Function for setting the color styles:

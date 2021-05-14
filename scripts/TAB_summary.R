@@ -75,6 +75,14 @@ summary_tab <- tabItem(tabName = "summary",
                                scientists to show what works and what doesn't. The results from
                                    these analyses also go into the Planting Planner here, where you can generate
                                    new experimental designs that acount for what treatments work best."
+                               ),
+                               br(),
+                               div(style="text-align:left",tags$h3("Meta Data")),
+                               
+                               box(width = "100%", status = "success",
+                                   "The data presented as a sample in this app are only HYPOTHETICAL
+                                   These data are NOT REAL. Unfortunately, but due to data sharing restrictions
+                                   we are unable to share the original datasets from our GV2050 project."
                                )
                         
                         )
@@ -88,12 +96,8 @@ summary_tab <- tabItem(tabName = "summary",
                                )
                              
                              ),
-                      column(width = 4,
-                             div(style="text-align:left",tags$h3("Meta Data")),
+                      column(width = 4
                              
-                               box(width = "100%", status = "success"
-                                   
-                               )
                              
                             )
                     ),
