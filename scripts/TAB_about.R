@@ -20,6 +20,7 @@ about_tab <- tabItem(tabName = "about",
                               the GV2050 team has been able to spend more time in the field doing what matters most,
                               restoring the unique ecosystems of the Galapagos. Today, the GV2050 team uses a version
                               of RestoR to manage 90+ restoration sites with over 12,000 plants."),
+
                                   img(src = "Logo_final.jpg", width = "70%", style="display: block; margin-left: auto; margin-right: auto;"),
                                   img(src = "mina granillo.jpg", width = "100%", style="display: block; margin-left: auto; margin-right: auto; max-width:100%;", ))
                        ),
