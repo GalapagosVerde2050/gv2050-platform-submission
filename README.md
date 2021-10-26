@@ -1,3 +1,5 @@
+**Note: this is the initial RestoR app script that we submitted for the Shiny competition. This is kept as-is just for historical record, but refer to the updated RestoR script for the latest version of the working app.
+
 # RestoR
 ### Authors: Luka Negoita, Anna Calle
 
